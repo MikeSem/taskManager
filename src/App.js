@@ -1,40 +1,68 @@
 import React, { Component } from 'react';
 import './App.css';
 import List from './List.js';
-//import Names from './listNames.js';
-/*var Names = [
-  'To do',
-  'In Progress',
-  'Finished'
-];*/
 
 class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      Names: []
+      Lists: []
     };
   };
   addList = (text) => {
-    var arr = this.state.Names;
-    arr.push(text);
-    this.setState({Names: arr});
+    var arr = this.state.Lists;
+    arr.push({
+              Name: text,
+              tasks: []
+            });
+    this.setState({Lists: arr});
   };
   deleteList = (ind) => {
-    var arr = this.state.Names;
+    var arr = this.state.Lists;
     arr.splice(ind, 1);
-    this.setState({Names: arr});
+    this.setState({Lists: arr});
   };
-  updateLists = (newName, ind) =>{
-    var arr = this.state.Names;
-    arr[ind] = newName;
-    this.setState({Names: arr});
+  updateLists = (newName, ind) => {
+    var arr = this.state.Lists;
+    arr[ind].Name = newName;
+    this.setState({Lists: arr});
+  };
+  updateTasks = (newTask, listInd, taskInd) => {
+    var arr = this.state.Lists;
+    arr[listInd].tasks[taskInd]=newTask;
+    this.setState({Lists: arr});
+  };
+  removeTask = (listInd, taskInd) => {
+    var arr = this.state.Lists;
+    arr[listInd].tasks.splice(taskInd, 1);
+    this.setState({Lists: arr});
+  };
+  newTask = (name, listInd) => {
+    var arr = this.state.Lists;
+    arr[listInd].tasks.push(name);
+    this.setState({Lists: arr});
+  };
+  mvTaskR = (listInd, taskInd) => {
+    var arr = this.state.Lists;
+    var task = arr[listInd].tasks[taskInd];
+    if(listInd<arr.length-1){
+      this.removeTask(listInd, taskInd);
+      this.newTask(task, listInd+1);
+    }
+  };
+  mvTaskL = (listInd, taskInd) => {
+    var arr = this.state.Lists;
+    var task = arr[listInd].tasks[taskInd];
+    if(listInd>0){
+      this.removeTask(listInd, taskInd);
+      this.newTask(task, listInd-1);
+    }
   };
   render() {
     return (
       <div className='container'>
-        {this.state.Names.map((item, index)=>
-          <List key={index} index={index} update={this.updateLists} del={this.deleteList}>
+        {this.state.Lists.map((item, index)=>
+          <List key={index}  index={index} update={this.updateLists} del={this.deleteList} updTask={this.updateTasks} rmvTask={this.removeTask} newTask={this.newTask} moveR={this.mvTaskR} moveL={this.mvTaskL}>
             {item}
           </List>
         )}

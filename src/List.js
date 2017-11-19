@@ -10,6 +10,9 @@ class List extends Component {
       tasks: []
     };
   };
+  componentWillReceiveProps(nextProps){
+    console.log(nextProps);
+  }
   rename = () => {
     this.setState({rename: true});
   };
@@ -21,30 +24,30 @@ class List extends Component {
     this.setState ({rename: false})
   };
   updateTask = (newName, ind) => {
-    var arr = this.state.tasks;
-    arr[ind] = newName;
-    this.setState({tasks: arr});
+    this.props.updTask(newName, this.props.index, ind);
   };
   newTask = (name) => {
-    var arr = this.state.tasks;
-    arr.push(name);
-    this.setState({tasks: arr});
+    this.props.newTask(name, this.props.index);
   };
   deleteTask = (ind) => {
-    var arr = this.state.tasks;
-    arr.splice(ind, 1);
-    this.setState({tasks: arr});
+    this.props.rmvTask(this.props.index, ind);
+  };
+  moveR = (taskInd) => {
+    this.props.moveR(this.props.index, taskInd);
+  };
+  moveL = (taskInd) => {
+    this.props.moveL(this.props.index, taskInd);
   };
   renderNorm = () => {
     return (
       <div className='list'>
         <div className='list-head'>
-          <div className='list-name'>{this.props.children}</div>
+          <div className='list-name'>{this.props.children.Name}</div>
           <button type="button" onClick={this.rename} className='list-btn'>Rename List</button>
           <button type="button" onClick={this.delete} className='list-btn'>Delete List</button>
         </div>
-        {this.state.tasks.map((item, index) =>
-          <ListItem key={index} index={index} update={this.updateTask} del={this.deleteTask}>{item}</ListItem>
+        {this.props.children.tasks.map((item, index) =>
+          <ListItem key={index} index={index} update={this.updateTask} del={this.deleteTask} moveR={this.moveR} moveL={this.moveL}>{item}</ListItem>
         )}
         <button type='button' onClick={this.newTask.bind(null, 'New Task')} className='list-btn new-task'>New Task</button>
       </div>
@@ -54,7 +57,7 @@ class List extends Component {
     return (
       <div className='list'>
         <div className='list-head'>
-          <textarea className='rename-box' ref='newName' defaultValue={this.props.children}></textarea>
+          <textarea className='rename-box' ref='newName' defaultValue={this.props.children.Name}></textarea>
           <button type="button" onClick={this.save} className='save-btn'>Save</button>
         </div>
         <button type='button' className='list-btn new-task'>New Task</button>

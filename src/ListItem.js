@@ -9,19 +9,20 @@ class ListItem extends Component {
     };
   };
   prev = () => {
-    alert('previous');
+    this.props.moveL(this.props.index);
   };
   edit = () => {
     this.setState({edit: true});
   };
   next = () => {
-    alert('next');
+    this.props.moveR(this.props.index);
   };
   save = () => {
     this.props.update(this.refs.newName.value, this.props.index);
     this.setState({edit: false});
   };
   delete = (ind) => {
+    this.setState({edit: false});
     this.props.del(this.props.index);
   };
   renderNorm = () => {
